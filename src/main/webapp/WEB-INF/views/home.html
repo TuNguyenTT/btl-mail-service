@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<meta charset="ISO-8859-1">
+<head>
+<title>Home</title>
+<style>
+table td {
+	vertical-align: top;
+	border: solid 1px #888;
+	padding: 10px;
+}
+</style>
+</head>
+<body>
+	<div>
+		<table>
+			<tr>
+				<th>Hello</th>
+			</tr>
+			<tr>
+				<td>STT</td>
+				<td>Code</td>
+				<td>Name</td>
+			</tr>
+			<tr>
+				<td>STT</td>
+				<td>AT120755</td>
+				<td>Nguyễn Thế Tú</td>
+			</tr>
+		</table>
+	</div>
+	<form th:action="@{/user/login}">
+		<div>
+			<input type="submit" value="Logout" />
+		</div>
+	</form>
+	<form th:action="@{/user/change-password}" th:object="${userModel}" method="get">
+		<div>
+			<input type="submit" value="Change Password" />
+		</div>
+	</form>
+</body>
+</html>

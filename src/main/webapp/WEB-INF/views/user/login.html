@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<meta charset="ISO-8859-1">
+<head>
+<title>Login</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+table td {
+	vertical-align: top;
+	border: solid 1px #888;
+	padding: 10px;
+}
+span {
+	color: red;
+}
+</style>
+</head>
+<body>
+	<div>
+		<form th:action="@{/user/login}" th:object="${authModel}" method="post">
+<!-- 			<div style="color: red"> -->
+<!-- 				<span class="error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span> -->
+<!-- 			</div> -->
+			<table>
+				<tr>
+					<td>
+						<label for="username">User name</label>
+						<input type="text" id="username" th:field="*{username}" />
+						<span class="error" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<label for="password">Password</label>
+						<input type="password" id="password" th:field="*{password}" />
+						<span class="error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+					</td>
+				</tr>
+				<tr>
+					<td>
+
+						<input type="submit" value="Login" />
+						<input type="button" onclick="window.location.href='/user/register'" value="Register" />
+						<input type="reset" value="Reset" />
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<a href="http://localhost:8080/user/send-mail">Forget password?</a>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+</body>
+</html>

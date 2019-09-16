@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Access Account</title>
+<style>
+table td {
+	vertical-align: top;
+	border: solid 1px #888;
+	padding: 10px;
+}
+span {
+	color: red;
+}
+</style>
+</head>
+<body>
+	<form th:action="@{/user/access-account}" th:object="${accessAccountModel}" method="post">
+<!-- 		<div style="color: red"> -->
+<!-- 				<span class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span> -->
+<!-- 				<span class="error" th:if="${#fields.hasErrors('pasword')}" th:errors="*{pasword}"></span> -->
+<!-- 		</div> -->
+		<table>
+			<tr>
+				<td>
+					<label for="newPassword">New Password</label>
+					<input type="password" id="newPassword" th:field="*{newPassword}" />
+					<span class="error" th:if="${#fields.hasErrors('newPassword')}" th:errors="*{newPassword}"></span>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<label for="confirmPassword">Confirm Password</label>
+					<input type="password" id="confirmPassword" th:field="*{confirmPassword}" />
+					<span class="error" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></span>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<input type="hidden" name="email" th:field="*{email}" />
+					<input type="submit" value="Save" /> <input type="reset" value="Reset" />
+				</td>
+			</tr>
+		</table>
+	</form>
+</body>
+</html>
