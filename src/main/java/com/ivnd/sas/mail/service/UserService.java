@@ -1,13 +1,18 @@
 package com.ivnd.sas.mail.service;
 
+import java.security.NoSuchAlgorithmException;
+
+import javax.validation.Valid;
+
+import org.springframework.validation.BindingResult;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.ivnd.sas.mail.entity.User;
 import com.ivnd.sas.mail.exception.AccessDeniedException;
-import com.ivnd.sas.mail.exception.DuplicatedException;
 import com.ivnd.sas.mail.exception.NotFoundEntityException;
 import com.ivnd.sas.mail.model.AuthModel;
 import com.ivnd.sas.mail.model.ChangePasswordModel;
 import com.ivnd.sas.mail.model.GetAccessAccountModel;
-import com.ivnd.sas.mail.model.RegisterModel;
-import com.ivnd.sas.mail.model.UserModel;
 
 /**
  * @author: Nguyen The Tu
@@ -18,12 +23,18 @@ import com.ivnd.sas.mail.model.UserModel;
 
 public interface UserService {
 
-	UserModel register(RegisterModel model) throws DuplicatedException, AccessDeniedException;
+	User get(Long id) throws NotFoundEntityException;
 
-	UserModel login(AuthModel model) throws NotFoundEntityException, AccessDeniedException;
+	void login(@Valid User user, BindingResult bindingResult);
 
-	UserModel getAccessAccountByEmail(GetAccessAccountModel model) throws NotFoundEntityException, AccessDeniedException;
+	void register(User user, BindingResult bindingResult, ModelAndView modelAndView);
 
-	UserModel changePassword(Long id, ChangePasswordModel model) throws NotFoundEntityException, AccessDeniedException;
+	User getAccessAccountByEmail(GetAccessAccountModel model) throws NotFoundEntityException, AccessDeniedException, NoSuchAlgorithmException;
+
+	User changePassword(Long id, ChangePasswordModel model) throws NotFoundEntityException, AccessDeniedException, NoSuchAlgorithmException;
+
+	User findByEmail(String email);
+
+
 }
 

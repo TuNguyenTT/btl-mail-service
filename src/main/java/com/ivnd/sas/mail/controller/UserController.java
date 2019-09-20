@@ -1,5 +1,6 @@
 package com.ivnd.sas.mail.controller;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
 
 import javax.servlet.ServletContext;
@@ -10,22 +11,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.ivnd.sas.mail.AppConstants;
+import com.ivnd.sas.mail.entity.User;
 import com.ivnd.sas.mail.exception.AccessDeniedException;
-import com.ivnd.sas.mail.exception.DuplicatedException;
 import com.ivnd.sas.mail.exception.NotFoundEntityException;
-import com.ivnd.sas.mail.model.AuthModel;
 import com.ivnd.sas.mail.model.ChangePasswordModel;
 import com.ivnd.sas.mail.model.GetAccessAccountModel;
 import com.ivnd.sas.mail.model.MailModel;
-import com.ivnd.sas.mail.model.RegisterModel;
 import com.ivnd.sas.mail.model.UserModel;
 import com.ivnd.sas.mail.service.MailForGuestService;
 import com.ivnd.sas.mail.service.UserService;
@@ -38,7 +39,6 @@ import com.ivnd.sas.mail.service.UserService;
  */
 
 @Controller
-@RequestMapping("/user")
 public class UserController {
 
 	private Logger log = LoggerFactory.getLogger(getClass());;
@@ -63,58 +63,43 @@ public class UserController {
 	}
 
 	@GetMapping("/login")
-	public String loginTrantion(Model model) {
-		AuthModel  authModel = new AuthModel();
-		model.addAttribute("authModel", authModel);
-		return "user/login";
+	public ModelAndView loginTrantion() {
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("login");
+		return modelAndView;
 	}
 
 	@PostMapping("/login")
-	public String exeLogintration(
-			@ModelAttribute("authModel") @Valid AuthModel authModel
-			, Errors errors
-			, Model model) throws NotFoundEntityException, AccessDeniedException {
-		if(errors.hasErrors()) {
-			return "user/login";
-		}
-//		try {
-			UserModel userModel = service.login(authModel);
-			userModel.setPassword(null);
-			session.setAttribute(AppConstants.USER_SESSION, userModel);
-			log.trace("{}", authModel);
-			model.addAttribute("userModel", userModel);
-//		} catch (NotFoundEntityException e) {
-//			errors.rejectValue(e.getErrorField(), null, e.getMessage());
-//		}
+	public ModelAndView login(@Valid User user, BindingResult bindingResult) {
+		ModelAndView modelAndView = new ModelAndView();
+		service.login(user, bindingResult);
+		
+		if (bindingResult.hasErrors()) {
+			modelAndView.setViewName("login");
+		} else {
+			modelAndView.addObject("successMessage", "User has been login successfully");
+			modelAndView.addObject("user", new User());
+			modelAndView.setViewName("login");
 
-		return "home";
+		}
+		return modelAndView;
 	}
 
-	@GetMapping("/register")
-	public String inititalRegistration(Model model) {
-		RegisterModel  createModel = new RegisterModel();
-		model.addAttribute("createModel", createModel);
-		return "user/registration";
+	@GetMapping("/registration")
+	public ModelAndView registration() {
+		ModelAndView modelAndView = new ModelAndView();
+		User user = new User();
+		modelAndView.addObject("user", user);
+		modelAndView.setViewName("registration");
+		return modelAndView;
 	}
 
-	@PostMapping("/register")
-	public String exeRegistration(@ModelAttribute("createModel") @Valid RegisterModel createModel
-			, Errors errors, Model model) throws DuplicatedException, AccessDeniedException {
-		if(errors.hasErrors()) {
-			return "user/registration";
-		}
+	@PostMapping("/registration")
+	public ModelAndView createNewUser(@Valid User user, BindingResult bindingResult) {
+		ModelAndView modelAndView = new ModelAndView();
+		service.register(user, bindingResult, modelAndView);
 
-//		try {
-			UserModel userModel = service.register(createModel);
-			session.setAttribute(AppConstants.USER_SESSION, userModel);
-			model.addAttribute("userModel", userModel);
-//		} catch (DuplicatedException e) {
-//			errors.rejectValue(e.getErrorField(), null, e.getMessage());
-//		} catch (AccessDeniedException e) {
-//			errors.rejectValue(e.getErrorField(), null, e.getMessage());
-//		}
-
-		return "home";
+		return modelAndView;
 	}
 
 	@GetMapping("/send-mail")
@@ -148,44 +133,33 @@ public class UserController {
 
 	@PostMapping("/access-account")
 	public String exeGetAccessAcountTrantion(@ModelAttribute("accessAccountModel") @Valid GetAccessAccountModel accessAccountModel
-			, Errors errors, Model model) throws NotFoundEntityException, AccessDeniedException {
+			, Errors errors, Model model) throws NotFoundEntityException, AccessDeniedException, NoSuchAlgorithmException {
 		if(errors.hasErrors()) {
 			return "user/accessAccount";
 		}
 
-		log.info("\n\n\n" + accessAccountModel.getEmail());
-//		try {
-			UserModel userModel = service.getAccessAccountByEmail(accessAccountModel);
-			session.setAttribute(AppConstants.USER_SESSION, userModel);
-			model.addAttribute("userModel", userModel);
-//		} catch (NotFoundEntityException e) {
-//			errors.rejectValue(e.getErrorField(), null, e.getMessage());
-//		} catch (AccessDeniedException e) {
-//			errors.rejectValue(e.getErrorField(), null, e.getMessage());
-//		}
+		User user = service.getAccessAccountByEmail(accessAccountModel);
+		session.setAttribute(AppConstants.USER_SESSION, user);
+		model.addAttribute("user", user);
 
 		return "home";
 	}
 
-	@GetMapping("/change-password")
-	public String changePasswordTrantion(Errors errors,  Model model) {
+	@GetMapping("/change-password/{id}")
+	public String changePasswordTrantion(@PathVariable("id") Long id, Model model) throws NotFoundEntityException {
+		User user = service.get(id);
 		ChangePasswordModel changePasswordModel = new ChangePasswordModel();
+		changePasswordModel.setId(user.getId());
 		model.addAttribute("changePasswordModel", changePasswordModel);
 		return "user/changePassword";
 	}
 
-	@PostMapping("/change-password")
-	public String exeChangePasswordTrantion(@ModelAttribute("changePasswordModel") @Valid ChangePasswordModel changePasswordModel
-			, Errors errors, Model model) throws NotFoundEntityException, AccessDeniedException {
-		UserModel userModel = (UserModel) session.getAttribute(AppConstants.USER_SESSION);
-//		try {
-			service.changePassword(userModel.getId(), changePasswordModel);
-			model.addAttribute("changePasswordModel", changePasswordModel);
-//		} catch (NotFoundEntityException e) {
-//			errors.rejectValue(null, null, e.getMessage());
-//		} catch (AccessDeniedException e) {
-//			errors.rejectValue(null, null, e.getMessage());
-//		}
+	@PostMapping("/change-password/{id}")
+	public String exeChangePasswordTrantion(@PathVariable("id") Long id, @ModelAttribute("changePasswordModel") @Valid ChangePasswordModel changePasswordModel
+			, Errors errors, Model model) throws NotFoundEntityException, AccessDeniedException, NoSuchAlgorithmException {
+
+		User user = service.changePassword(id, changePasswordModel);
+		model.addAttribute("user", user);
 
 		return "home";
 

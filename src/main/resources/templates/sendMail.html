@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Send mail</title>
+<style>
+table td {
+	vertical-align: top;
+	border: solid 1px #888;
+	padding: 10px;
+}
+</style>
+</head>
+<body>
+	<form th:action="@{/user/send-mail}" th:object="${mailModel}" method="post">
+		<table>
+			<tr>
+				<td>
+					<label for="email">Email</label>
+					<input type="email" id="email" th:field="*{email}"/>
+					<span class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<input type="submit" value="Continue" />
+					<input type="reset" value="Reset" />
+				</td>
+			</tr>
+		</table>
+	</form>
+</body>
+</html>

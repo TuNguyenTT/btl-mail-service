@@ -1,0 +1,133 @@
+<!-- <!DOCTYPE html> -->
+<!-- <html xmlns:th="http://www.thymeleaf.org"> -->
+<!-- <meta charset="ISO-8859-1"> -->
+<!-- <head> -->
+<!-- <title>Registration</title> -->
+<!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+<!-- <style> -->
+<!-- /* table td { */ -->
+<!-- /* 	vertical-align: top; */ -->
+<!-- /* 	border: solid 1px #888; */ -->
+<!-- /* 	padding: 10px; */ -->
+<!-- /* } */ -->
+<!-- /* span { */ -->
+<!-- /* 	color: red; */ -->
+<!-- /* } */ -->
+<!-- </style> -->
+<!-- </head> -->
+<!-- <body> -->
+<!-- 	<div> -->
+<!-- 		<form th:action="@{/registrantrion}" th:object="${user}" method="post"> -->
+<!-- 			<div style="color: red"> -->
+<!-- 				<span class="error" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span> -->
+<!-- 				<span class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span> -->
+<!-- 				<span class="error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span> -->
+<!-- 			</div> -->
+<!-- 			<table> -->
+<!-- 				<tr> -->
+<!-- 					<td> -->
+<!-- 						<label for="username">User name</label> -->
+<!-- 						<input type="text" id="username" th:field="*{username}" /> -->
+<!-- 						<span class="error"th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span> -->
+<!-- 					</td> -->
+<!-- 				</tr> -->
+<!-- 				<tr> -->
+<!-- 					<td> -->
+<!-- 						<label for="password">Password</label> -->
+<!-- 						<input type="password" id="password" th:field="*{password}" /> -->
+<!-- 						<span class="error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span> -->
+<!-- 					</td> -->
+<!-- 				</tr> -->
+<!-- 				<tr> -->
+<!-- 					<td> -->
+<!-- 						<label for="email">Email</label> -->
+<!-- 						<input type="email" id="email" th:field="*{email}" /> -->
+<!-- 						<span class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span> -->
+<!-- 					</td> -->
+<!-- 				</tr> -->
+<!-- 				<tr> -->
+<!-- 					<td> -->
+<!-- 						<input type="submit" value="Register" /> -->
+<!-- 						<input type="reset" value="Reset" /> -->
+<!-- 					</td> -->
+<!-- 				</tr> -->
+<!-- 			</table> -->
+<!-- 		</form> -->
+<!-- 	</div> -->
+<!-- </body> -->
+<!-- </html> -->
+
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Registration Form</title>
+<link rel="stylesheet" type="text/css"
+	th:href="@{/css/registration.css}" />
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body style="max-width: 450px; margin: 0 auto">
+<!-- 	<div class="container"> -->
+<!-- 		<div class="row"> -->
+<!-- 			<div class="col-md-6 col-md-offset-3"> -->
+				<div style="text-align: center;" class="row">
+					<a class="tab-link tab-link-actice" onclick="window.location.href='/login'">Đăng nhập</a>
+					<div class="divider--vertical"></div>
+					<a class="tab-link" href="#">Đăng ký</a>
+				</div>
+				<form autocomplete="off" th:action="@{/registration}"
+					th:object="${user}" method="post" class="form-horizontal" role="form">
+					<h2>Registration Form</h2>
+					<div class="form-group">
+						<div class="col-sm-9">
+							<label th:if="${#fields.hasErrors('username')}"
+								th:errors="*{username}" class="validation-message"></label> <input
+								type="text" th:field="*{username}" placeholder="Name"
+								class="form-control" />
+						</div>
+					</div>
+
+					<div class="form-group">
+						<div class="col-sm-9">
+							<input type="text" th:field="*{email}" placeholder="Email"
+								class="form-control" /> <label
+								th:if="${#fields.hasErrors('email')}" th:errors="*{email}"
+								class="validation-message"></label>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-9">
+							<input type="password" th:field="*{password}"
+								placeholder="Password" class="form-control" /> <label
+								th:if="${#fields.hasErrors('password')}" th:errors="*{password}"
+								class="validation-message"></label>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<div class="col-sm-9">
+							<button type="submit" class="btn btn-lg btn-primary btn-block">Register</button>
+						</div>
+					</div>
+
+					<span th:utext="${successMessage}"></span>
+				</form>
+<!-- 				<form th:action="@{/login}" method="get" class="form-horizontal"> -->
+<!-- 					<div class="form-group"> -->
+<!-- 						<div class="col-sm-9"> -->
+<!-- 							<button class="btn btn-primary btn-block" type="Submit">Go To Login Page</button> -->
+							
+<!-- 						</div> -->
+<!-- 					</div> -->
+<!-- 				</form> -->
+<!-- 			</div> -->
+<!-- 		</div> -->
+<!-- 	</div> -->
+
+</body>
+</html>
